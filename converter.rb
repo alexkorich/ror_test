@@ -1,14 +1,25 @@
 class Converter
 
+  attr_reader :dictionary_array
   def initialize(dictionary_file)
+
     @dictionary_array = []
 
     raw_dict = File.open(dictionary_file).read
-    raw_dict.gsub!(/\r\n?/, "\n")
     raw_dict.each_line do |word|
-      @dictionary_array << [word.map{|x| word_code(word.downcase)}.join.to_i, word.downcase]
+      word.gsub!("\n", '')
+
+      @dictionary_array << [word.downcase.split("").map{|x| word_code(x)}.join.to_i, word.downcase]
     end
     @dictionary_array.sort!
+    @dictionary_array.each_with_index.map do |el, i|
+      next if i == 0
+      if el[0] == @dictionary_array[i-1][0]
+        el << @dictionary_array[i-1][1,2000]
+        @dictionary_array[i-1][1] = nil
+      end
+    end
+    @dictionary_array.reject! {|el| el[1] == nil }
   end
 
   def convert(ten_digits)
@@ -42,3 +53,7 @@ class Converter
   end
 
 end
+
+
+
+converter = Converter.new('dictionary2.txt')
