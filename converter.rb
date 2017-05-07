@@ -12,7 +12,7 @@ class Converter
     raw_dict.each_line do |word|
       word.gsub!("\n", '')
 
-      @dictionary_array << [word.downcase.split("").map{|x| word_code(x)}.join.to_i, word.downcase]
+      @dictionary_array << [ word.downcase.split("").map{|x| word_code(x) }.join.to_i, word.downcase ]
     end
     @dictionary_array.sort!
     @dictionary_array.each_with_index.map do |el, i|
@@ -23,7 +23,7 @@ class Converter
       end
     end
     @dictionary_array.reject! {|el| el[1] == nil }
-    @dictionary_array.map!{|x| {x[0] => x[1,1000]}}
+    @dictionary_array.map!{|x| {x[0] => x[1,1000]} }
     @dictionary_array.each do |x|
       @dictionary_hash.merge!(x)
     end
@@ -36,13 +36,13 @@ class Converter
       if o.to_s.length == 10
         res << @dictionary_hash[o]
       else
-        inside_first = @dictionary_hash[o[0]]
-        inside_second = @dictionary_hash[o[1]]
+        inside_first = @dictionary_hash[ o[0] ]
+        inside_second = @dictionary_hash[ o[1] ]
         if inside_first && inside_second
           if inside_first.any? && inside_second.any?
             inside_first.each do |f|
               inside_second.each do |s|
-                res << [ f, s]
+                res << [ f, s ]
               end
             end
           end
@@ -93,7 +93,3 @@ class Converter
   end
 
 end
-
-
-
-converter = Converter.new('dictionary.txt')
