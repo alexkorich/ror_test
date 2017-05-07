@@ -1,9 +1,12 @@
 class Converter
 
   attr_reader :dictionary_array
+  attr_reader :dictionary_hash
+
   def initialize(dictionary_file)
 
     @dictionary_array = []
+    @dictionary_hash = {}
 
     raw_dict = File.open(dictionary_file).read
     raw_dict.each_line do |word|
@@ -15,11 +18,15 @@ class Converter
     @dictionary_array.each_with_index.map do |el, i|
       next if i == 0
       if el[0] == @dictionary_array[i-1][0]
-        el << @dictionary_array[i-1][1,2000]
+        el.concat @dictionary_array[i-1][1,2000]
         @dictionary_array[i-1][1] = nil
       end
     end
     @dictionary_array.reject! {|el| el[1] == nil }
+    @dictionary_array.map!{|x| {x[0] => x[1,1000]}}
+    @dictionary_array.each do |x|
+      @dictionary_hash.merge!(x)
+    end
   end
 
   def convert(ten_digits)
@@ -56,4 +63,4 @@ end
 
 
 
-converter = Converter.new('dictionary2.txt')
+converter = Converter.new('dictionary.txt')
