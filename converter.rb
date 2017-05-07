@@ -30,11 +30,44 @@ class Converter
   end
 
   def convert(ten_digits)
-    
+    res = []
+    options = digits_options(ten_digits)
+    options.each do |o|
+      if o.to_s.length == 10
+        res << @dictionary_hash[o]
+      else
+        inside_first = @dictionary_hash[o[0]]
+        inside_second = @dictionary_hash[o[1]]
+        if inside_first && inside_second
+          if inside_first.any? && inside_second.any?
+            inside_first.each do |f|
+              inside_second.each do |s|
+                res << [ f, s]
+              end
+            end
+          end
+        end
+      end
+
+    end
+    res.compact
   end
 
 
   private
+
+  def digits_options(num)
+    # consider only pairs of word, no 555-blah-bla or foo-bar-bazz or he-23567-llo
+    num = num.to_s.split("")
+    puts num.class
+    res = []
+    res << num.join().to_i
+    res << [num[0..2].join().to_i, num[3..9].join().to_i]
+    res << [num[0..3].join().to_i, num[4..9].join().to_i]
+    res << [num[0..4].join().to_i, num[5..9].join().to_i]
+    res << [num[0..5].join().to_i, num[6..9].join().to_i]    #IMMA MASTER OF ALGORITHMS
+    res
+  end
 
   def word_code(word)
     word.chars.map do |char|
